@@ -34,7 +34,7 @@ function List({ courses, activeCourseId }: Props) {
         <Card
           key={course.id}
           course={course}
-          disabled={false}
+          disabled={pending}
           onClick={onClick}
           isActive={course.id === activeCourseId}
         />
