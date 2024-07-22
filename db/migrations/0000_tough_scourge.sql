@@ -4,7 +4,7 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "challengeOptions" (
+CREATE TABLE IF NOT EXISTS "challenge_options" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"challenge_id" integer NOT NULL,
 	"text" text NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "challengeOptions" (
 	"audio_src" text
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "challengeProgress" (
+CREATE TABLE IF NOT EXISTS "challenge_progress" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
 	"challenge_id" integer NOT NULL,
@@ -26,6 +26,12 @@ CREATE TABLE IF NOT EXISTS "challenges" (
 	"type" "type" NOT NULL,
 	"question" text NOT NULL,
 	"order" integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "courses" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"title" text NOT NULL,
+	"image_src" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "lessons" (
@@ -43,14 +49,23 @@ CREATE TABLE IF NOT EXISTS "units" (
 	"order" integer NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "user_progress" (
+	"user_id" text PRIMARY KEY NOT NULL,
+	"user_name" text DEFAULT 'User' NOT NULL,
+	"user_image_src" text DEFAULT '/mascot.svg' NOT NULL,
+	"active_course_id" integer,
+	"hearts" integer DEFAULT 5 NOT NULL,
+	"points" integer DEFAULT 0 NOT NULL
+);
+--> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "challengeOptions" ADD CONSTRAINT "challengeOptions_challenge_id_challenges_id_fk" FOREIGN KEY ("challenge_id") REFERENCES "public"."challenges"("id") ON DELETE cascade ON UPDATE no action;
+ ALTER TABLE "challenge_options" ADD CONSTRAINT "challenge_options_challenge_id_challenges_id_fk" FOREIGN KEY ("challenge_id") REFERENCES "public"."challenges"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "challengeProgress" ADD CONSTRAINT "challengeProgress_challenge_id_challenges_id_fk" FOREIGN KEY ("challenge_id") REFERENCES "public"."challenges"("id") ON DELETE cascade ON UPDATE no action;
+ ALTER TABLE "challenge_progress" ADD CONSTRAINT "challenge_progress_challenge_id_challenges_id_fk" FOREIGN KEY ("challenge_id") REFERENCES "public"."challenges"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -69,6 +84,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "units" ADD CONSTRAINT "units_course_id_courses_id_fk" FOREIGN KEY ("course_id") REFERENCES "public"."courses"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user_progress" ADD CONSTRAINT "user_progress_active_course_id_courses_id_fk" FOREIGN KEY ("active_course_id") REFERENCES "public"."courses"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
