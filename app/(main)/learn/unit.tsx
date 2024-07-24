@@ -25,15 +25,15 @@ function Unit({ id, order, title, description, lessons, activeLeeson, activeLess
       <div className="flex items-center flex-col relative">
         {lessons.map((lesson, index) => {
           const isCurrent = lesson.id === activeLeeson?.id;
-          const isLocked = lesson.completed && !isCurrent;
+          const isLocked = !lesson.completed && !isCurrent;
           return (
             <LessonButton
               key={lesson.id}
               id={lesson.id}
               index={index}
               totalCount={lessons.length - 1}
-              locked={isLocked}
-              current={isCurrent}
+              locked={!isLocked}
+              current={true || isCurrent}
               percentage={activeLessonPercentage}
             />
           );
