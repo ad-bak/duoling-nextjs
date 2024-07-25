@@ -76,7 +76,7 @@ export const getCourseById = cache(async (id: number) => {
   return data;
 });
 
-export const getCourseProgres = cache(async () => {
+export const getCourseProgress = cache(async () => {
   const { userId } = await auth();
   const userProgress = await getUserProgress();
 
@@ -124,7 +124,7 @@ export const getCourseProgres = cache(async () => {
 
 export const getLesson = cache(async (id?: number) => {
   const { userId } = await auth();
-  const courseProgress = await getCourseProgres();
+  const courseProgress = await getCourseProgress();
 
   if (!userId) {
     return;
@@ -165,4 +165,23 @@ export const getLesson = cache(async (id?: number) => {
   });
 
   return { ...data, challenges: normalizedChallenges };
+});
+
+export const getLessonPercentage = cache(async () => {
+  const courseProgress = await getCourseProgress();
+
+  if (!courseProgress?.activeLesson) {
+    return 0;
+  }
+
+  const lesson = await getLesson(courseProgress.activeLesson.id);
+
+  if (!lesson) {
+    return 0;
+  }
+
+  const completedChallenges = lesson.challenges.filter((challenge) => challenge.completed);
+  const percentage = Math.round((completedChallenges.length / lesson.challenges.length) * 100);
+
+  return percentage;
 });

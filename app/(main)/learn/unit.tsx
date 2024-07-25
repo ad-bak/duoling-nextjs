@@ -32,8 +32,8 @@ function Unit({ id, order, title, description, lessons, activeLeeson, activeLess
               id={lesson.id}
               index={index}
               totalCount={lessons.length - 1}
-              locked={!isLocked}
-              current={true || isCurrent}
+              locked={isLocked}
+              current={isCurrent}
               percentage={activeLessonPercentage}
             />
           );
