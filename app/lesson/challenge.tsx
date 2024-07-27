@@ -17,7 +17,7 @@ function Challenge({ options, onSelect, status, selectedOption, disabled, type }
       className={cn(
         "grid gap-2",
         type === "ASSIST" && "grid-cols-1",
-        type === "ASSIST" && "grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(0,1fr))]"
+        type === "SELECT" && "grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(0,1fr))]"
       )}
     >
       {options.map((option, i) => (
