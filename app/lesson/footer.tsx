@@ -48,7 +48,7 @@ function Footer({ onCheck, status, disabled, lessonId }: Props) {
           disabled={disabled}
           onClick={onCheck}
           size={isMobile ? "sm" : "lg"}
-          className="ml-auto bg-green-300 text-white text-xl font-bold uppercase shadow-lg border-b-4 border-green-500"
+          className="ml-auto bg-green-300 text-white text-xl font-bold uppercase shadow-lg border-b-4 border-green-500 hover:bg-green-400"
         >
           {status === "none" && "Check"}
           {status === "correct" && "Next"}
