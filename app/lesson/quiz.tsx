@@ -9,9 +9,11 @@ import Footer from "./footer";
 import { upsertChallengeProgress } from "@/actions/challenge-progress";
 import { toast } from "sonner";
 import { reduceHearts } from "@/actions/user-progress";
-import { useAudio } from "react-use";
+import { useAudio, useWindowSize } from "react-use";
 import Image from "next/image";
 import ResultCard from "./result-card";
+import { useRouter } from "next/navigation";
+import Confetti from "react-confetti";
 
 type Props = {
   initialPercentage: number;
@@ -32,12 +34,18 @@ export const Quiz = ({
   initialLessonChallenges,
   userSubscription,
 }: Props) => {
+  const { width, height } = useWindowSize();
+  const router = useRouter();
+
+  const [finishAudio] = useAudio({ src: "/finish.mp3", autoPlay: true });
   const [corrcetAudio, _c, correctcontrols] = useAudio({ src: "/correct.wav" });
   const [incorrcetAudio, _i, incorrectControls] = useAudio({ src: "/incorrect.wav" });
+
+  const [lessonId] = useState(initialLessonId);
   const [pending, startTransition] = useTransition();
   const [hearts, setHearts] = useState(initialHearts);
   const [percentage, setPercentage] = useState(initialPercentage);
-  const [challenges, setChallenges] = useState(initialLessonChallenges);
+  const [challenges] = useState(initialLessonChallenges);
   const [activeIndex, setActiveIndex] = useState(() => {
     const uncompletedIndex = challenges.findIndex((challenge) => !challenge.completed);
     return uncompletedIndex === -1 ? 0 : uncompletedIndex;
@@ -117,9 +125,11 @@ export const Quiz = ({
     }
   };
 
-  if (true || !challenge) {
+  if (!challenge) {
     return (
       <>
+        {finishAudio}
+        <Confetti recycle={false} numberOfPieces={500} tweenDuration={500} width={width} height={height} />
         <div className="flex flex-col gap-y-4 lg:gap-y-8 max-w-lg mx-auto text-center items-center justify-center h-full">
           <Image src="/finish.svg" width={100} height={100} alt="Finish" className="hidden lg:block" />
           <Image src="/finish.svg" width={50} height={50} alt="Finish" className="block lg:hidden" />
@@ -133,6 +143,7 @@ export const Quiz = ({
             <ResultCard variant="hearts" value={hearts} />
           </div>
         </div>
+        <Footer status={"completed"} onCheck={() => router.push("/learn")} lessonId={lessonId} />
       </>
     );
   }
