@@ -1,5 +1,6 @@
 import { challenges } from "@/db/schema";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 type Props = {
   id: number;
@@ -23,10 +24,45 @@ function Card({ id, text, imageSrc, shortcut, selected, onClick, status, audioSr
         selected && "border-sky-300 bg-sky-100 hover:bg-sky-100",
         selected && status === "correct" && "border-green-300 bg-green-100 hover:bg-green-100",
         selected && status === "wrong" && "border-rose-300 bg-rose-100 hover:bg-rose-100",
-        disabled && ""
+        disabled && "pointer-events-none hover:bg-white",
+        type === "ASSIST" && "lg:p-3 w-full"
       )}
     >
-      Card
+      {imageSrc && (
+        <div className="relative aspect-square mb-4 max-h-[80px] lg:max-h-[150px] w-full">
+          <Image
+            src={imageSrc}
+            alt={text}
+            objectFit="contain"
+            className="min-w-200 min-h-200 items-center justify-center object-cover w-full lg:h-36"
+            width={200}
+            height={200}
+          />
+        </div>
+      )}
+      <div className={cn("flex items-center justify-between", type === "ASSIST" && "flex-row-reverse")}>
+        {type === "ASSIST" && <div />}
+        <p
+          className={cn(
+            "text-neutral-600 text-sm lg:text-base",
+            selected && "text-sky-500",
+            selected && status === "correct" && "text-green-500",
+            selected && status === "wrong" && "text-rose-500"
+          )}
+        >
+          {text}
+        </p>
+        <div
+          className={cn(
+            "lg:w-[30px] lg:h-[30px] w-[20px] h-[20px] border-2 flex items-center justify-center rounded-lg text-neutral-400 lg:text-[15px] text-xs font-semibold",
+            selected && "text-sky-500 border-sky-300",
+            selected && status === "correct" && "text-green-500 border-green-500",
+            selected && status === "wrong" && "text-rose-500 border-rose-500"
+          )}
+        >
+          {shortcut}
+        </div>
+      </div>
     </div>
   );
 }
